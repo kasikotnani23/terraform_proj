@@ -5,13 +5,14 @@ provider "aws" {
 }
 
 variable "cidr" {
-  default = "10.0.0.0/16"
+  default = "10.0.0.0/20"
 }
 
 resource "aws_key_pair" "example" {
-  key_name   = "terraform-demo-abhi"  # Replace with your desired key name
-  public_key = file("~/.ssh/id_rsa.pub")  # Replace with the path to your public key file
+  key_name   = "terraform-prj-key"
+  public_key = file("D:/Devops/Terraform_codes/key_pairs_terraform.pub")  # Use the correct path
 }
+
 
 resource "aws_vpc" "myvpc" {
   cidr_block = var.cidr
@@ -74,7 +75,7 @@ resource "aws_security_group" "webSg" {
 }
 
 resource "aws_instance" "server" {
-  ami                    = "ami-0261755bbcb8c4a84"
+  ami                    = "ami-04b4f1a9cf54c11d0"
   instance_type          = "t2.micro"
   key_name      = aws_key_pair.example.key_name
   vpc_security_group_ids = [aws_security_group.webSg.id]
@@ -83,7 +84,7 @@ resource "aws_instance" "server" {
   connection {
     type        = "ssh"
     user        = "ubuntu"  # Replace with the appropriate username for your EC2 instance
-    private_key = file("~/.ssh/id_rsa")  # Replace with the path to your private key
+    private_key = file("D:/Devops/Terraform_codes/key_pairs_terraform")  # Replace with the path to your private key
     host        = self.public_ip
   }
 
@@ -100,7 +101,7 @@ resource "aws_instance" "server" {
       "sudo apt-get install -y python3-pip",  # Example package installation
       "cd /home/ubuntu",
       "sudo pip3 install flask",
-      "sudo python3 app.py &",
+      "sudo python3 app.py &"  # Run the application in the background
     ]
   }
 }
